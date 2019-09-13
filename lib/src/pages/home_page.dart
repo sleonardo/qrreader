@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:qrcode_reader/qrcode_reader.dart';
 import 'package:qrreaderapp/src/bloc/scans_bloc.dart';
 import 'package:qrreaderapp/src/models/scan_model.dart';
 import 'package:qrreaderapp/src/pages/direcciones_page.dart';
 import 'package:qrreaderapp/src/pages/mapas_page.dart';
+import 'package:qrreaderapp/src/utils/utils.dart' as utils;
 
 class HomePage extends StatefulWidget {
   @override
@@ -35,7 +38,7 @@ class _HomePageState extends State<HomePage> {
       body: _callPage(currentIndex),
       bottomNavigationBar: _crearBottomNavigationBar(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: _crearFloatingActionButton(),
+      floatingActionButton: _crearFloatingActionButton(context),
     );
   }
 
@@ -71,17 +74,17 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Widget _crearFloatingActionButton() {
+  Widget _crearFloatingActionButton(BuildContext context) {
     return FloatingActionButton(
       child: Icon(Icons.filter_center_focus),
       onPressed: () {
-        _scanQR();
+        _scanQR(context);
       },
       backgroundColor: Theme.of(context).primaryColor,
     );
   }
 
-  void _scanQR() async {
+  void _scanQR(BuildContext context) async {
 
     //http://google.com.co
     //geo:4.676667909195463,-74.04825582941896
@@ -104,8 +107,18 @@ class _HomePageState extends State<HomePage> {
       print('Tenemos información');
     } */
     if (futureString != null){
-      final scan = ScanModel(valor: futureString);
+      final scan = ScanModel(tipo: 'http', valor: futureString);
       scanBloc.agregarScan(scan);
+      final scan2 = ScanModel(valor: "geo:4.676667909195463,-74.04825582941896");
+      scanBloc.agregarScan(scan2);
+
+      if (Platform.isIOS) {
+        Future.delayed(Duration(milliseconds: 750), () {
+          utils.launchURL(context, scan);
+        });
+      } else {
+        utils.launchURL(context, scan);
+      }
     }
-  }
+   }
 }
