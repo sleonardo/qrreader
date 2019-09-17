@@ -88,8 +88,8 @@ class _HomePageState extends State<HomePage> {
 
     //http://google.com.co
     //geo:4.676667909195463,-74.04825582941896
-    String futureString = 'http://google.com.co'; 
-    /* try {
+    String futureString; //= 'http://google.com.co'; 
+    try {
       futureString = await new QRCodeReader()
                .setAutoFocusIntervalInMs(200) // default 5000
                .setForceAutoFocus(true) // default false
@@ -105,12 +105,10 @@ class _HomePageState extends State<HomePage> {
     
     if (futureString != null){
       print('Tenemos información');
-    } */
-    if (futureString != null){
-      final scan = ScanModel(tipo: 'http', valor: futureString);
+      final scan = ScanModel(valor: futureString);
       scanBloc.agregarScan(scan);
-      final scan2 = ScanModel(valor: "geo:4.676667909195463,-74.04825582941896");
-      scanBloc.agregarScan(scan2);
+      /*final scan2 = ScanModel(tipo: 'geo', valor: "geo:40.77521075822597,-73.97023573359377");
+      scanBloc.agregarScan(scan2);*/
 
       if (Platform.isIOS) {
         Future.delayed(Duration(milliseconds: 750), () {

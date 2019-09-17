@@ -1,3 +1,4 @@
+import 'package:latlong/latlong.dart';
 
 class ScanModel {
     int id;
@@ -8,7 +9,13 @@ class ScanModel {
         this.id,
         this.tipo,
         this.valor,
-    });
+    }){
+      if ( this.valor.contains('http') ) {
+        this.tipo = 'http';
+      } else {
+        this.tipo = 'geo';
+      }
+    }
 
     factory ScanModel.fromJson(Map<String, dynamic> json) => new ScanModel(
         id   : json["id"],
@@ -21,4 +28,11 @@ class ScanModel {
         "tipo" : tipo,
         "valor": valor,
     };
+
+    LatLng getLatLng() {
+      final lalo = valor.substring(4).split(',');
+      final lat = double.parse(lalo[0]);
+      final lng = double.parse(lalo[1]);
+      return LatLng(lat, lng);
+     }
 }
